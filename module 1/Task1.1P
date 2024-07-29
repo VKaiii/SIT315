@@ -12,7 +12,7 @@ void loop()
 {
 	int sensor = analogRead(tempsensor);
   	float vol = sensor * (5.0 / 1023.0);
-  	float temperature = vol * 100.0;
+  	float temperature = (vol - 0.5) * 100.0;
 
   if (temperature > thresholdtemp)
   {
