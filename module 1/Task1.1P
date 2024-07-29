@@ -1,0 +1,28 @@
+int tempsensor = A0;
+int LEDPins = 13;
+float thresholdtemp = 30.0; // only trigger when it reaches that number
+
+void setup()
+{
+	pinMode(LEDPins, OUTPUT);
+  	Serial.begin(9600);
+}
+
+void loop()
+{
+	int sensor = analogRead(tempsensor);
+  	float vol = sensor * (5.0 / 1023.0);
+  	float temperature = vol * 100.0;
+
+  if (temperature > thresholdtemp)
+  {
+      digitalWrite(LEDPins, HIGH); // signify that the temp is above the threshold
+  }
+
+  else
+  {
+      digitalWrite(LEDPins, LOW); // signify that the temp is below threshold.
+  }
+  delay(1000);
+  
+}
