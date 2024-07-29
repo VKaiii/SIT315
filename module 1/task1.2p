@@ -1,0 +1,40 @@
+int tempsensor = A2;
+int LEDPins =2;
+float thresholdtemp = 30.0; // only trigger when it reaches that number
+bool tempcrossthreshold; //indicating when temp is above threshold
+
+void setup()
+{
+  	pinMode(LEDPins, OUTPUT);
+  	Serial.begin(9600);
+  	attachInterrupt(digitalPinToInterrupt(LEDPins), checktemp,FALLING );
+}
+
+void loop()
+{
+
+  	int sensor = analogRead(tempsensor);
+  	float vol = sensor * (5.0 / 1023.0);
+  	float temperature = (vol - 0.5) * 100.0;
+  
+  if (temperature > thresholdtemp)
+  {
+      digitalWrite(LEDPins, HIGH); // signify that the temp is above the threshold
+      Serial.println("Temperature is above threshold");
+      tempcrossthreshold = true;
+  }
+
+  else
+  {
+      digitalWrite(LEDPins, LOW); // signify that the temp is below threshold.
+      Serial.println("Temperature is below threshold");
+     tempcrossthreshold = false;
+  }
+  	delay(500);
+
+}
+
+void checktemp()
+{
+	tempcrossthreshold = !tempcrossthreshold;
+}
