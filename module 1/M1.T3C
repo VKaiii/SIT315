@@ -1,0 +1,69 @@
+int trigPin = 9;
+int echoPin = 10;
+int soundLEDPins = 3;
+int soundthreshold = 40;
+int tempsensor = A2;
+int tempLEDPins =13;
+float thresholdtemp = 30.0; // only trigger when it reaches that number
+bool tempcrossthreshold; //indicating when temp is above threshold
+
+void setup()
+{
+  	pinMode(tempLEDPins, OUTPUT);
+  	pinMode(trigPin, OUTPUT);
+  	pinMode(echoPin, INPUT);
+  	pinMode(soundLEDPins, OUTPUT);
+  	Serial.begin(9600);
+  	attachInterrupt(digitalPinToInterrupt(tempLEDPins), checktemp,FALLING );
+}
+
+void loop()
+{
+	long duration;
+  	int distance;
+  	
+  	digitalWrite(trigPin, LOW);
+  	digitalWrite(trigPin, HIGH);
+  	digitalWrite(trigPin, LOW);
+  
+  	duration = pulseIn(echoPin, HIGH);
+  	distance = duration * 0.034 /2;
+  
+  	if(distance < soundthreshold)
+    {
+    	digitalWrite(soundLEDPins, HIGH);
+      	Serial.println("distance is below threshold");
+    }
+  	else
+    {
+    	digitalWrite(soundLEDPins, LOW);
+      	Serial.println("distance is above threshold");
+    }
+  
+
+  	
+  	int sensor = analogRead(tempsensor);
+  	float vol = sensor * (5.0 / 1023.0);
+  	float temperature = (vol - 0.5) * 100.0;
+  
+  if (temperature > thresholdtemp)
+  {
+      digitalWrite(tempLEDPins, HIGH); // signify that the temp is above the threshold
+      Serial.println("Temperature is above threshold");
+      tempcrossthreshold = true;
+  }
+
+  else
+  {
+      digitalWrite(tempLEDPins, LOW); // signify that the temp is below threshold.
+      Serial.println("Temperature is below threshold");
+     tempcrossthreshold = false;
+  }
+  	delay(500);
+
+}
+
+void checktemp()
+{
+	tempcrossthreshold = !tempcrossthreshold;
+}
